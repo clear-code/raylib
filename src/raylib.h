@@ -1082,6 +1082,7 @@ RLAPI bool IsKeyUp(int key);                                  // Check if a key 
 RLAPI void SetExitKey(int key);                               // Set a custom key to exit program (default is ESC)
 RLAPI int GetKeyPressed(void);                                // Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty
 RLAPI int GetCharPressed(void);                               // Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty
+RLAPI int GetPreeditPressed(void);
 
 // Input-related functions: gamepads
 RLAPI bool IsGamepadAvailable(int gamepad);                   // Check if a gamepad is available
@@ -1105,6 +1106,7 @@ RLAPI int GetMouseY(void);                                    // Get mouse posit
 RLAPI Vector2 GetMousePosition(void);                         // Get mouse position XY
 RLAPI Vector2 GetMouseDelta(void);                            // Get mouse delta between frames
 RLAPI void SetMousePosition(int x, int y);                    // Set mouse position XY
+RLAPI void SetPreeditCursorPosition(int x, int y, int h);     // Set preedit cursor postion XY
 RLAPI void SetMouseOffset(int offsetX, int offsetY);          // Set mouse offset
 RLAPI void SetMouseScale(float scaleX, float scaleY);         // Set mouse scaling
 RLAPI float GetMouseWheelMove(void);                          // Get mouse wheel movement Y

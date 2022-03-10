@@ -432,6 +432,9 @@ typedef struct CoreData {
             int charPressedQueue[MAX_CHAR_PRESSED_QUEUE];   // Input characters queue (unicode)
             int charPressedQueueCount;      // Input characters queue count
 
+            int preeditPressedQueue[MAX_CHAR_PRESSED_QUEUE];   // Input characters queue (unicode)
+            int preeditPressedQueueCount;      // Input characters queue count
+
 #if defined(PLATFORM_RPI) || defined(PLATFORM_DRM)
             int defaultMode;                // Default keyboard mode
 #if defined(SUPPORT_SSH_KEYBOARD_RPI)
@@ -633,6 +636,7 @@ static void WindowDropCallback(GLFWwindow *window, int count, const char **paths
 // Input callbacks events
 static void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);  // GLFW3 Keyboard Callback, runs on key pressed
 static void CharCallback(GLFWwindow *window, unsigned int key);                            // GLFW3 Char Key Callback, runs on key pressed (get char value)
+static void PreeditCallback(GLFWwindow* window, int strLength, unsigned int* string, int blockLength, int* blocks, int focusedBlock);
 static void MouseButtonCallback(GLFWwindow *window, int button, int action, int mods);     // GLFW3 Mouse Button Callback, runs on mouse button pressed
 static void MouseCursorPosCallback(GLFWwindow *window, double x, double y);                // GLFW3 Cursor Position Callback, runs on mouse move
 static void MouseScrollCallback(GLFWwindow *window, double xoffset, double yoffset);       // GLFW3 Srolling Callback, runs on mouse wheel
@@ -3542,6 +3546,27 @@ int GetCharPressed(void)
     return value;
 }
 
+int GetPreeditPressed(void)
+{
+    int value = 0;
+
+    if (CORE.Input.Keyboard.preeditPressedQueueCount > 0)
+    {
+        // Get character from the queue head
+        value = CORE.Input.Keyboard.preeditPressedQueue[0];
+
+        // Shift elements 1 step toward the head.
+        for (int i = 0; i < (CORE.Input.Keyboard.preeditPressedQueueCount - 1); i++)
+            CORE.Input.Keyboard.preeditPressedQueue[i] = CORE.Input.Keyboard.preeditPressedQueue[i + 1];
+
+        // Reset last character in the queue
+        CORE.Input.Keyboard.preeditPressedQueue[CORE.Input.Keyboard.preeditPressedQueueCount] = 0;
+        CORE.Input.Keyboard.preeditPressedQueueCount--;
+    }
+
+    return value;
+}
+
 // Set a custom key to exit program
 // NOTE: default exitKey is ESCAPE
 void SetExitKey(int key)
@@ -3763,6 +3788,14 @@ void SetMousePosition(int x, int y)
 #if defined(PLATFORM_DESKTOP) || defined(PLATFORM_WEB)
     // NOTE: emscripten not implemented
     glfwSetCursorPos(CORE.Window.handle, CORE.Input.Mouse.currentPosition.x, CORE.Input.Mouse.currentPosition.y);
+#endif
+}
+
+// Set preedit cursor postion XY
+void SetPreeditCursorPosition(int x, int y, int h)
+{
+#if defined(PLATFORM_DESKTOP)
+    glfwSetPreeditCursorPos(CORE.Window.handle, x, y, h);
 #endif
 }
 
@@ -4148,6 +4181,7 @@ static bool InitGraphicsDevice(int width, int height)
     // Set input callback events
     glfwSetKeyCallback(CORE.Window.handle, KeyCallback);
     glfwSetCharCallback(CORE.Window.handle, CharCallback);
+    glfwSetPreeditCallback(CORE.Window.handle, PreeditCallback);
     glfwSetMouseButtonCallback(CORE.Window.handle, MouseButtonCallback);
     glfwSetCursorPosCallback(CORE.Window.handle, MouseCursorPosCallback);   // Track mouse position changes
     glfwSetScrollCallback(CORE.Window.handle, MouseScrollCallback);
@@ -4893,6 +4927,7 @@ void PollInputEvents(void)
     // Reset keys/chars pressed registered
     CORE.Input.Keyboard.keyPressedQueueCount = 0;
     CORE.Input.Keyboard.charPressedQueueCount = 0;
+    CORE.Input.Keyboard.preeditPressedQueueCount = 0;
 
 #if !(defined(PLATFORM_RPI) || defined(PLATFORM_DRM))
     // Reset last gamepad button/axis registered state
@@ -5310,6 +5345,36 @@ static void CharCallback(GLFWwindow *window, unsigned int key)
         // Add character to the queue
         CORE.Input.Keyboard.charPressedQueue[CORE.Input.Keyboard.charPressedQueueCount] = key;
         CORE.Input.Keyboard.charPressedQueueCount++;
+    }
+}
+
+static void PreeditCallback(GLFWwindow* window, int strLength, unsigned int* string, int blockLength, int* blocks, int focusedBlock) {
+    if (MAX_KEY_PRESSED_QUEUE <= CORE.Input.Keyboard.preeditPressedQueueCount) return;
+    int i, blockIndex = -1, blockCount = 0;
+    if (strLength == 0 || blockLength == 0) {
+        // printf("(empty)\n");
+    } else {
+        for (i = 0; i < strLength; i++) {
+            if (blockCount == 0) {
+                if (blockIndex == focusedBlock) {
+                    // printf("]");
+                }
+                blockIndex++;
+                blockCount = blocks[blockIndex];
+                // printf("\n   block %d: ", blockIndex);
+                if (blockIndex == focusedBlock) {
+                    // printf("[");
+                }
+            }
+            // printf("%s", get_character_string(string[i]));
+            CORE.Input.Keyboard.preeditPressedQueue[CORE.Input.Keyboard.preeditPressedQueueCount] = string[i];
+            CORE.Input.Keyboard.preeditPressedQueueCount++;
+            blockCount--;
+        }
+        if (blockIndex == focusedBlock) {
+            // printf("]");
+        }
+        // printf("\n");
     }
 }
 
