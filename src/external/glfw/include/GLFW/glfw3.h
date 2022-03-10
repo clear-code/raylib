@@ -1100,6 +1100,7 @@ extern "C" {
 #define GLFW_STICKY_MOUSE_BUTTONS   0x00033003
 #define GLFW_LOCK_KEY_MODS          0x00033004
 #define GLFW_RAW_MOUSE_MOTION       0x00033005
+#define GLFW_IME                    0x00033006
 
 #define GLFW_CURSOR_NORMAL          0x00034001
 #define GLFW_CURSOR_HIDDEN          0x00034002
@@ -1708,6 +1709,10 @@ typedef void (* GLFWcharfun)(GLFWwindow*,unsigned int);
  *  @ingroup input
  */
 typedef void (* GLFWcharmodsfun)(GLFWwindow*,unsigned int,int);
+
+typedef void (* GLFWpreeditfun)(GLFWwindow*,int,unsigned int*,int,int*,int);
+
+typedef void (* GLFWimestatusfun)(GLFWwindow*);
 
 /*! @brief The function pointer type for path drop callbacks.
  *
@@ -4691,6 +4696,12 @@ GLFWAPI void glfwDestroyCursor(GLFWcursor* cursor);
  */
 GLFWAPI void glfwSetCursor(GLFWwindow* window, GLFWcursor* cursor);
 
+GLFWAPI void glfwGetPreeditCursorPos(GLFWwindow* window, int *x, int *y, int *h);
+
+GLFWAPI void glfwSetPreeditCursorPos(GLFWwindow* window, int x, int y, int h);
+
+GLFWAPI void glfwResetPreeditText(GLFWwindow* window);
+
 /*! @brief Sets the key callback.
  *
  *  This function sets the key callback of the specified window, which is called
@@ -4825,6 +4836,10 @@ GLFWAPI GLFWcharfun glfwSetCharCallback(GLFWwindow* window, GLFWcharfun callback
  *  @ingroup input
  */
 GLFWAPI GLFWcharmodsfun glfwSetCharModsCallback(GLFWwindow* window, GLFWcharmodsfun callback);
+
+GLFWAPI GLFWpreeditfun glfwSetPreeditCallback(GLFWwindow* window, GLFWpreeditfun cbfun);
+
+GLFWAPI GLFWimestatusfun glfwSetIMEStatusCallback(GLFWwindow* window, GLFWimestatusfun cbfun);
 
 /*! @brief Sets the mouse button callback.
  *
