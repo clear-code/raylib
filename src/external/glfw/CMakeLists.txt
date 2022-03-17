@@ -227,12 +227,13 @@ endif()
 if (_GLFW_COCOA)
 
     list(APPEND glfw_LIBRARIES
+        "-framework Carbon"
         "-framework Cocoa"
         "-framework IOKit"
         "-framework CoreFoundation")
 
     set(glfw_PKG_DEPS "")
-    set(glfw_PKG_LIBS "-framework Cocoa -framework IOKit -framework CoreFoundation")
+    set(glfw_PKG_LIBS "-framework Carbon -framework Cocoa -framework IOKit -framework CoreFoundation")
 endif()
 
 #--------------------------------------------------------------------
