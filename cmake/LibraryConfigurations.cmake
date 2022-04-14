@@ -109,4 +109,8 @@ set(LIBS_PRIVATE ${LIBS_PRIVATE} ${OPENAL_LIBRARY})
 
 if (${PLATFORM} MATCHES "Desktop")
     set(LIBS_PRIVATE ${LIBS_PRIVATE} glfw)
+    if (WIN32)
+      # Need to set after glfw
+      set(LIBS_PRIVATE ${LIBS_PRIVATE} imm32)
+    endif()
 endif ()
