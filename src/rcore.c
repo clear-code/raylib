@@ -441,6 +441,7 @@ typedef struct CoreData {
             int charPressedQueue[MAX_CHAR_PRESSED_QUEUE];   // Input characters queue (unicode)
             int charPressedQueueCount;      // Input characters queue count
 
+            bool preeditExists;
             int preeditPressedQueue[MAX_CHAR_PRESSED_QUEUE];   // Input characters queue (unicode)
             int preeditPressedQueueCount;      // Input characters queue count
 
@@ -3576,6 +3577,10 @@ int GetPreeditPressed(void)
     return value;
 }
 
+bool PreeditExists(void)
+{
+    return CORE.Input.Keyboard.preeditExists;
+}
 // Set a custom key to exit program
 // NOTE: default exitKey is ESCAPE
 void SetExitKey(int key)
@@ -5358,11 +5363,13 @@ static void CharCallback(GLFWwindow *window, unsigned int key)
 }
 
 static void PreeditCallback(GLFWwindow* window, int strLength, unsigned int* string, int blockLength, int* blocks, int focusedBlock) {
+    // TODO Pass info about blocks to the applications.
     if (MAX_KEY_PRESSED_QUEUE <= CORE.Input.Keyboard.preeditPressedQueueCount) return;
     int i, blockIndex = -1, blockCount = 0;
     if (strLength == 0 || blockLength == 0) {
-        // printf("(empty)\n");
+        CORE.Input.Keyboard.preeditExists = false;
     } else {
+        CORE.Input.Keyboard.preeditExists = true;
         for (i = 0; i < strLength; i++) {
             if (blockCount == 0) {
                 if (blockIndex == focusedBlock) {

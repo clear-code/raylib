@@ -1083,6 +1083,7 @@ RLAPI void SetExitKey(int key);                               // Set a custom ke
 RLAPI int GetKeyPressed(void);                                // Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty
 RLAPI int GetCharPressed(void);                               // Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty
 RLAPI int GetPreeditPressed(void);
+RLAPI bool PreeditExists(void);
 
 // Input-related functions: gamepads
 RLAPI bool IsGamepadAvailable(int gamepad);                   // Check if a gamepad is available
