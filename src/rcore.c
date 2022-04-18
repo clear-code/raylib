@@ -647,6 +647,7 @@ static void WindowDropCallback(GLFWwindow *window, int count, const char **paths
 static void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);  // GLFW3 Keyboard Callback, runs on key pressed
 static void CharCallback(GLFWwindow *window, unsigned int key);                            // GLFW3 Char Key Callback, runs on key pressed (get char value)
 static void PreeditCallback(GLFWwindow* window, int strLength, unsigned int* string, int blockLength, int* blocks, int focusedBlock);
+static void IMEStatusCallback(GLFWwindow *window);
 static void MouseButtonCallback(GLFWwindow *window, int button, int action, int mods);     // GLFW3 Mouse Button Callback, runs on mouse button pressed
 static void MouseCursorPosCallback(GLFWwindow *window, double x, double y);                // GLFW3 Cursor Position Callback, runs on mouse move
 static void MouseScrollCallback(GLFWwindow *window, double xoffset, double yoffset);       // GLFW3 Srolling Callback, runs on mouse wheel
@@ -4202,6 +4203,7 @@ static bool InitGraphicsDevice(int width, int height)
     glfwSetKeyCallback(CORE.Window.handle, KeyCallback);
     glfwSetCharCallback(CORE.Window.handle, CharCallback);
     glfwSetPreeditCallback(CORE.Window.handle, PreeditCallback);
+    glfwSetIMEStatusCallback(CORE.Window.handle, IMEStatusCallback);
     glfwSetMouseButtonCallback(CORE.Window.handle, MouseButtonCallback);
     glfwSetCursorPosCallback(CORE.Window.handle, MouseCursorPosCallback);   // Track mouse position changes
     glfwSetScrollCallback(CORE.Window.handle, MouseScrollCallback);
@@ -5398,6 +5400,12 @@ static void PreeditCallback(GLFWwindow* window, int strLength, unsigned int* str
         }
         // printf("\n");
     }
+}
+
+static void IMEStatusCallback(GLFWwindow *window)
+{
+    // TODO This seems to be called when the IME changes on or off. How should raylib use this?
+    printf("IMEStatusCallback is called.\n");
 }
 
 // GLFW3 Mouse Button Callback, runs on mouse button pressed
