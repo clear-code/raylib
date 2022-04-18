@@ -3581,6 +3581,12 @@ bool PreeditExists(void)
 {
     return CORE.Input.Keyboard.preeditExists;
 }
+
+int GetImeStatus(void)
+{
+    return glfwGetInputMode(CORE.Window.handle, GLFW_IME);
+}
+
 // Set a custom key to exit program
 // NOTE: default exitKey is ESCAPE
 void SetExitKey(int key)
