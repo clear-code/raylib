@@ -3536,6 +3536,12 @@ void SetPreeditCallback(PreeditCallback callback)
     CORE.Input.Keyboard.preeditCallback = callback;
 }
 
+// Set a preedit window postion XY
+void SetPreeditWindowPosition(int x, int y)
+{
+    glfwSetPreeditCursorPos(CORE.Window.handle, x, y, 0);
+}
+
 // Set a custom key to exit program
 // NOTE: default exitKey is ESCAPE
 void SetExitKey(int key)
