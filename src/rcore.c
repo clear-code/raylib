@@ -3553,6 +3553,13 @@ bool IsImeOn(void)
     return false;
 }
 
+// Set IME status
+void SetImeStatus(bool on)
+{
+    if (on) glfwSetInputMode(CORE.Window.handle, GLFW_IME, GLFW_TRUE);
+    else glfwSetInputMode(CORE.Window.handle, GLFW_IME, GLFW_FALSE);
+}
+
 // Set a custom key to exit program
 // NOTE: default exitKey is ESCAPE
 void SetExitKey(int key)
