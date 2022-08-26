@@ -3570,6 +3570,12 @@ void SetImeStatus(bool on)
     else glfwSetInputMode(CORE.Window.handle, GLFW_IME, GLFW_FALSE);
 }
 
+// Reset preedit text
+void ResetPreedit(void)
+{
+    glfwResetPreeditText(CORE.Window.handle);
+}
+
 // Set a custom key to exit program
 // NOTE: default exitKey is ESCAPE
 void SetExitKey(int key)
