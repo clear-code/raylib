@@ -3548,6 +3548,13 @@ void GetPreeditWindowPosition(int *x, int *y)
     glfwGetPreeditCursorPos(CORE.Window.handle, x, y, NULL);
 }
 
+// Check if IME is ON
+bool IsImeOn(void)
+{
+    if (glfwGetInputMode(CORE.Window.handle, GLFW_IME) == GLFW_TRUE) return true;
+    return false;
+}
+
 // Set a custom key to exit program
 // NOTE: default exitKey is ESCAPE
 void SetExitKey(int key)
