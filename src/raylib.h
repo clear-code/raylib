@@ -1113,6 +1113,7 @@ RLAPI void SetPreeditCallback(PreeditCallback callback);      // Set a callback 
 RLAPI void SetPreeditWindowPosition(int x, int y);            // Set a preedit window postion XY
 RLAPI void GetPreeditWindowPosition(int *x, int *y);          // Get a preedit window postion XY
 RLAPI bool IsImeOn(void);                                     // Check if IME is ON
+RLAPI void SetImeStatus(bool on);                             // Set IME status
 
 // Input-related functions: gamepads
 RLAPI bool IsGamepadAvailable(int gamepad);                   // Check if a gamepad is available
