@@ -1111,6 +1111,7 @@ RLAPI int GetKeyPressed(void);                                // Get key pressed
 RLAPI int GetCharPressed(void);                               // Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty
 RLAPI void SetPreeditCallback(PreeditCallback callback);      // Set a callback for preedit
 RLAPI void SetPreeditCursorRectangle(int x, int y, int w, int h); // Set the preedit cursor area that is used to decide the position of the candidate window
+RLAPI void GetPreeditCursorRectangle(int *x, int *y, int *w, int *h); // Get the preedit cursor area
 
 // Input-related functions: gamepads
 RLAPI bool IsGamepadAvailable(int gamepad);                   // Check if a gamepad is available
