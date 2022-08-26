@@ -3567,6 +3567,13 @@ void GetPreeditCursorRectangle(int *x, int *y, int *w, int *h)
     glfwGetPreeditCursorRectangle(CORE.Window.handle, x, y, w, h);
 }
 
+// Check if IME is ON
+bool IsImeOn(void)
+{
+    if (glfwGetInputMode(CORE.Window.handle, GLFW_IME) == GLFW_TRUE) return true;
+    return false;
+}
+
 // Set a custom key to exit program
 // NOTE: default exitKey is ESCAPE
 void SetExitKey(int key)
