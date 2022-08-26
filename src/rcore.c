@@ -3564,6 +3564,12 @@ void SetPreeditCursorRectangle(int x, int y, int w, int h)
     glfwSetPreeditCursorRectangle(CORE.Window.handle, x, y, w, h);
 }
 
+// Get the preedit cursor area
+void GetPreeditCursorRectangle(int *x, int *y, int *w, int *h)
+{
+    glfwGetPreeditCursorRectangle(CORE.Window.handle, x, y, w, h);
+}
+
 // Set a custom key to exit program
 // NOTE: default exitKey is ESCAPE
 void SetExitKey(int key)
