@@ -503,6 +503,7 @@ typedef struct FilePathList {
 typedef enum {
     FLAG_VSYNC_HINT         = 0x00000040,   // Set to try enabling V-Sync on GPU
     FLAG_FULLSCREEN_MODE    = 0x00000002,   // Set to run program in fullscreen
+    FLAG_SOFT_FULLSCREEN    = 0x00020000,   // Set to make fullscreen non-exclusive, which is suitable for applications such as text-editors
     FLAG_WINDOW_RESIZABLE   = 0x00000004,   // Set to allow resizable window
     FLAG_WINDOW_UNDECORATED = 0x00000008,   // Set to disable window decoration (frame and buttons)
     FLAG_WINDOW_HIDDEN      = 0x00000080,   // Set to hide window

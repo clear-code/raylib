@@ -3972,6 +3972,9 @@ static bool InitGraphicsDevice(int width, int height)
     // Check window creation flags
     if ((CORE.Window.flags & FLAG_FULLSCREEN_MODE) > 0) CORE.Window.fullscreen = true;
 
+    if ((CORE.Window.flags & FLAG_SOFT_FULLSCREEN) > 0) glfwWindowHint(GLFW_SOFT_FULLSCREEN, GLFW_TRUE); // Not exclusive fullscreen
+    else glfwWindowHint(GLFW_SOFT_FULLSCREEN, GLFW_FALSE); // Exclusive fullscreen
+
     if ((CORE.Window.flags & FLAG_WINDOW_HIDDEN) > 0) glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // Visible window
     else glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);     // Window initially hidden
 
