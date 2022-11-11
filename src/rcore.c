@@ -438,6 +438,8 @@ typedef struct CoreData {
             int charPressedQueue[MAX_CHAR_PRESSED_QUEUE];   // Input characters queue (unicode)
             int charPressedQueueCount;      // Input characters queue count
 
+            PreeditCallback preeditCallback;                // Preedit callback
+
 #if defined(PLATFORM_RPI) || defined(PLATFORM_DRM)
             int defaultMode;                // Default keyboard mode
 #if defined(SUPPORT_SSH_KEYBOARD_RPI)
@@ -639,6 +641,7 @@ static void WindowDropCallback(GLFWwindow *window, int count, const char **paths
 // Input callbacks events
 static void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);  // GLFW3 Keyboard Callback, runs on key pressed
 static void CharCallback(GLFWwindow *window, unsigned int key);                            // GLFW3 Char Key Callback, runs on key pressed (get char value)
+static void PreeditCallbackInner(GLFWwindow *window, int preeditLength, unsigned int *preeditString, int blockCount, int *blockSizes, int focusedBlock, int caret); // GLFW3 Preedit Callback
 static void MouseButtonCallback(GLFWwindow *window, int button, int action, int mods);     // GLFW3 Mouse Button Callback, runs on mouse button pressed
 static void MouseCursorPosCallback(GLFWwindow *window, double x, double y);                // GLFW3 Cursor Position Callback, runs on mouse move
 static void MouseScrollCallback(GLFWwindow *window, double xoffset, double yoffset);       // GLFW3 Srolling Callback, runs on mouse wheel
@@ -3543,6 +3546,12 @@ int GetCharPressed(void)
     return value;
 }
 
+// Set a callback for preedit
+void SetPreeditCallback(PreeditCallback callback)
+{
+    CORE.Input.Keyboard.preeditCallback = callback;
+}
+
 // Set a custom key to exit program
 // NOTE: default exitKey is ESCAPE
 void SetExitKey(int key)
@@ -4139,6 +4148,7 @@ static bool InitGraphicsDevice(int width, int height)
     // Set input callback events
     glfwSetKeyCallback(CORE.Window.handle, KeyCallback);
     glfwSetCharCallback(CORE.Window.handle, CharCallback);
+    glfwSetPreeditCallback(CORE.Window.handle, PreeditCallbackInner);
     glfwSetMouseButtonCallback(CORE.Window.handle, MouseButtonCallback);
     glfwSetCursorPosCallback(CORE.Window.handle, MouseCursorPosCallback);   // Track mouse position changes
     glfwSetScrollCallback(CORE.Window.handle, MouseScrollCallback);
@@ -5377,6 +5387,14 @@ static void CharCallback(GLFWwindow *window, unsigned int key)
         CORE.Input.Keyboard.charPressedQueueCount++;
     }
 }
+
+ // GLFW3 Preedit Callback
+static void PreeditCallbackInner(GLFWwindow *window, int preeditLength, unsigned int *preeditString, int blockCount, int *blockSizes, int focusedBlock, int caret)
+{
+    if (!CORE.Input.Keyboard.preeditCallback) return;
+    CORE.Input.Keyboard.preeditCallback(preeditLength, (int *)preeditString, blockCount, blockSizes, focusedBlock, caret);
+}
+
 
 // GLFW3 Mouse Button Callback, runs on mouse button pressed
 static void MouseButtonCallback(GLFWwindow *window, int button, int action, int mods)
