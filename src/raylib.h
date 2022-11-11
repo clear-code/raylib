@@ -1092,6 +1092,14 @@ RLAPI unsigned char *DecodeDataBase64(const unsigned char *data, int *outputSize
 //------------------------------------------------------------------------------------
 // Input Handling Functions (Module: core)
 //------------------------------------------------------------------------------------
+// Callback for preedit text.
+// preeditLength: The length of preedit text
+// preeditString: The preedit text (unicode)
+// blockCount: The number of all converting blocks
+// blockSizes: The size of each converting block
+// focusedBlock: The index of the current converting block
+// caret: The index of the caret in preeditString
+typedef void (*PreeditCallback)(int preeditLength, int *preeditString, int blockCount, int *blockSizes, int focusedBlock, int caret);
 
 // Input-related functions: keyboard
 RLAPI bool IsKeyPressed(int key);                             // Check if a key has been pressed once
@@ -1101,6 +1109,7 @@ RLAPI bool IsKeyUp(int key);                                  // Check if a key 
 RLAPI void SetExitKey(int key);                               // Set a custom key to exit program (default is ESC)
 RLAPI int GetKeyPressed(void);                                // Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty
 RLAPI int GetCharPressed(void);                               // Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty
+RLAPI void SetPreeditCallback(PreeditCallback callback);      // Set a callback for preedit
 
 // Input-related functions: gamepads
 RLAPI bool IsGamepadAvailable(int gamepad);                   // Check if a gamepad is available
