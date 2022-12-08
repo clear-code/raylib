@@ -80,7 +80,7 @@
 #define MAX_GAMEPAD_BUTTONS           32        // Maximum number of buttons supported (per gamepad)
 #define MAX_TOUCH_POINTS               8        // Maximum number of touch points supported
 #define MAX_KEY_PRESSED_QUEUE         16        // Maximum number of keys in the key input queue
-#define MAX_CHAR_PRESSED_QUEUE        16        // Maximum number of characters in the char input queue
+#define MAX_CHAR_PRESSED_QUEUE        64        // Maximum number of characters in the char input queue
 
 #define MAX_DECOMPRESSION_SIZE        64        // Max size allocated for decompression in MB
 
