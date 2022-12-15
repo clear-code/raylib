@@ -438,7 +438,8 @@ typedef struct CoreData {
             int charPressedQueue[MAX_CHAR_PRESSED_QUEUE];   // Input characters queue (unicode)
             int charPressedQueueCount;      // Input characters queue count
 
-            PreeditCallback preeditCallback;                // Preedit callback
+            PreeditCallback preeditCallback;                   // Preedit callback
+            PreeditCandidateCallback preeditCandidateCallback; // Preedit candidate callback
 
 #if defined(PLATFORM_RPI) || defined(PLATFORM_DRM)
             int defaultMode;                // Default keyboard mode
@@ -642,6 +643,7 @@ static void WindowDropCallback(GLFWwindow *window, int count, const char **paths
 static void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);  // GLFW3 Keyboard Callback, runs on key pressed
 static void CharCallback(GLFWwindow *window, unsigned int key);                            // GLFW3 Char Key Callback, runs on key pressed (get char value)
 static void PreeditCallbackInner(GLFWwindow *window, int preeditLength, unsigned int *preeditString, int blockCount, int *blockSizes, int focusedBlock, int caret); // GLFW3 Preedit Callback
+static void PreeditCandidateCallbackInner(GLFWwindow *window, int candidatesCount, int selectedIndex, int pageStart, int pageSize); // GLFW3 Preedit Candidate Callback
 static void MouseButtonCallback(GLFWwindow *window, int button, int action, int mods);     // GLFW3 Mouse Button Callback, runs on mouse button pressed
 static void MouseCursorPosCallback(GLFWwindow *window, double x, double y);                // GLFW3 Cursor Position Callback, runs on mouse move
 static void MouseScrollCallback(GLFWwindow *window, double xoffset, double yoffset);       // GLFW3 Srolling Callback, runs on mouse wheel
@@ -3590,6 +3592,18 @@ void ResetPreedit(void)
     glfwResetPreeditText(CORE.Window.handle);
 }
 
+// Set a callback for preedit candidate
+void SetPreeditCandidateCallback(PreeditCandidateCallback callback)
+{
+    CORE.Input.Keyboard.preeditCandidateCallback = callback;
+}
+
+// Get the text of the preedie candidate
+int *GetPreeditCandidate(int index, int *textCount)
+{
+    return (int *)glfwGetPreeditCandidate(CORE.Window.handle, index, textCount);
+}
+
 // Set a custom key to exit program
 // NOTE: default exitKey is ESCAPE
 void SetExitKey(int key)
@@ -3956,6 +3970,9 @@ static bool InitGraphicsDevice(int width, int height)
     glfwInitHint(GLFW_COCOA_CHDIR_RESOURCES, GLFW_FALSE);
 #endif
 
+    if ((CORE.Window.flags & FLAG_MANAGE_PREEDIT_CANDIDATE) > 0) glfwInitHint(GLFW_MANAGE_PREEDIT_CANDIDATE, GLFW_TRUE); // Manage the drawing of preedit candidates.
+    else glfwInitHint(GLFW_MANAGE_PREEDIT_CANDIDATE, GLFW_FALSE); // Leave the drawing of preedit candidates to the IME 
+
     if (!glfwInit())
     {
         TRACELOG(LOG_WARNING, "GLFW: Failed to initialize GLFW");
@@ -4187,6 +4204,7 @@ static bool InitGraphicsDevice(int width, int height)
     glfwSetKeyCallback(CORE.Window.handle, KeyCallback);
     glfwSetCharCallback(CORE.Window.handle, CharCallback);
     glfwSetPreeditCallback(CORE.Window.handle, PreeditCallbackInner);
+    glfwSetPreeditCandidateCallback(CORE.Window.handle, PreeditCandidateCallbackInner);
     glfwSetMouseButtonCallback(CORE.Window.handle, MouseButtonCallback);
     glfwSetCursorPosCallback(CORE.Window.handle, MouseCursorPosCallback);   // Track mouse position changes
     glfwSetScrollCallback(CORE.Window.handle, MouseScrollCallback);
@@ -5433,6 +5451,12 @@ static void PreeditCallbackInner(GLFWwindow *window, int preeditLength, unsigned
     CORE.Input.Keyboard.preeditCallback(preeditLength, (int *)preeditString, blockCount, blockSizes, focusedBlock, caret);
 }
 
+// GLFW3 Preedit Candidate Callback
+static void PreeditCandidateCallbackInner(GLFWwindow *window, int candidatesCount, int selectedIndex, int pageStart, int pageSize)
+{
+    if (!CORE.Input.Keyboard.preeditCandidateCallback) return;
+    CORE.Input.Keyboard.preeditCandidateCallback(candidatesCount, selectedIndex, pageStart, pageSize);
+}
 
 // GLFW3 Mouse Button Callback, runs on mouse button pressed
 static void MouseButtonCallback(GLFWwindow *window, int button, int action, int mods)
